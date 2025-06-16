@@ -12,7 +12,7 @@ const Results = ({ quizData, name }) => {
   const totalQuestions = questions.length;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-base-200 px-4">
+    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-base-200 px-4">
       <div className="bg-base-100 p-8 rounded-2xl shadow-2xl w-full max-w-3xl text-center border border-base-300 flex flex-col gap-6">
         <h1 className="text-3xl md:text-4xl font-bold text-primary drop-shadow">
           🎉 Well done, {name}!

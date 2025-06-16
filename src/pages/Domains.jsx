@@ -11,7 +11,7 @@ const Domains = () => {
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <div className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center overflow-hidden">
       <img src={p1} alt="background" className="absolute top-0 left-0 w-full h-full object-cover -z-10" />
       <div className="bg-base-100 p-6 rounded-2xl shadow-2xl w-11/12 max-w-5xl flex flex-col md:flex-row items-center gap-6 border border-base-300">
         <div className="hidden md:flex w-full md:w-1/2 items-center justify-center">

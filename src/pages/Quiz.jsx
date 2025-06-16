@@ -87,7 +87,7 @@ const Quiz = () => {
   };
 
   return (
-    <div className="min-h-screen bg-base-200 flex items-center justify-center px-4">
+    <div className="min-h-[calc(100vh-4rem)] bg-base-200 flex items-center justify-center px-4">
       <div
         ref={containerRef}
         tabIndex={0}

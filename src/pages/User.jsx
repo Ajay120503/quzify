@@ -23,7 +23,7 @@ const User = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-base-200 px-4">
+    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-base-200 px-4">
       <div className="bg-base-100 p-6 rounded-2xl shadow-xl w-full max-w-3xl flex flex-col md:flex-row gap-6 border border-base-300">
         <div className="relative flex flex-col items-center justify-center gap-2 md:flex-1">
           <div className="relative w-40 h-40 md:w-64 md:h-64 rounded-full overflow-hidden border-4 border-base-300 flex items-center justify-center">
