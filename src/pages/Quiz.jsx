@@ -6,19 +6,17 @@ import toast from 'react-hot-toast';
 
 const Quiz = () => {
   const location = useLocation();
-  const name = location.state?.name;
+  const name = localStorage.getItem('quiz-user-name');
 
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState(Array(questions.length).fill(null));
   const [submitted, setSubmitted] = useState(false);
 
-  // Check for saved time on load
   const initialTime = localStorage.getItem('quiz-timeLeft')
     ? parseInt(localStorage.getItem('quiz-timeLeft'))
     : 300;
 
   const [timeLeft, setTimeLeft] = useState(initialTime);
-
   const containerRef = useRef(null);
 
   const handleOptionClick = (option) => {
@@ -32,41 +30,31 @@ const Quiz = () => {
   };
 
   const handleNext = () => {
-    if (current < questions.length - 1) {
-      setCurrent(current + 1);
-    }
+    if (current < questions.length - 1) setCurrent(current + 1);
   };
 
   const handleClear = () => {
-    if (answers[current] !== null) {
-      const updatedAnswers = [...answers];
-      updatedAnswers[current] = null;
-      setAnswers(updatedAnswers);
-    }
+    const updatedAnswers = [...answers];
+    updatedAnswers[current] = null;
+    setAnswers(updatedAnswers);
   };
 
   const handleSubmit = () => {
     setSubmitted(true);
     toast.success('Quiz submitted successfully!');
-    localStorage.removeItem('quiz-timeLeft'); // Clear timer on submission
+    localStorage.removeItem('quiz-timeLeft');
     localStorage.removeItem('quiz-user-name');
-
   };
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
-      if (current < questions.length - 1) {
-        handleNext();
-      } else {
-        handleSubmit();
-      }
+      if (current < questions.length - 1) handleNext();
+      else handleSubmit();
     }
   };
 
-  // Timer countdown effect with localStorage
   useEffect(() => {
     if (submitted) return;
-
     if (timeLeft === 0) {
       handleSubmit();
       toast.error("⏳ Time's up! Quiz auto-submitted.");
@@ -76,7 +64,7 @@ const Quiz = () => {
     const timer = setTimeout(() => {
       setTimeLeft((prev) => {
         const newTime = prev - 1;
-        localStorage.setItem('quiz-timeLeft', newTime); // Update localStorage
+        localStorage.setItem('quiz-timeLeft', newTime);
         return newTime;
       });
     }, 1000);
@@ -95,87 +83,85 @@ const Quiz = () => {
   const currentQuestion = questions[current];
 
   const formatTime = (seconds) => {
-    const m = Math.floor(seconds / 60)
-      .toString()
-      .padStart(2, '0');
+    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
     const s = (seconds % 60).toString().padStart(2, '0');
     return `${m}:${s}`;
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="min-h-screen bg-base-200 flex items-center justify-center px-4">
       <div
         ref={containerRef}
         tabIndex={0}
         onKeyDown={handleKeyDown}
-        className="hero-content flex items-center justify-center bg-base-content p-4"
+        className="w-full max-w-3xl bg-white rounded-2xl p-6 shadow-xl border border-gray-300 flex flex-col gap-6"
       >
-        <div className="flex flex-col items-center w-full max-w-3xl gap-6">
-          <h1 className="text-3xl md:text-4xl font-bold text-secondary-content text-center drop-shadow">
-            👋 {name}, ready to test your skills?
-          </h1>
+        <h1 className="text-3xl md:text-4xl font-bold text-primary text-center drop-shadow">
+          👋 {name}, ready to test your skills?
+        </h1>
 
-          <div className="text-lg font-semibold text-error">
-            ⏰ Time Remaining: {formatTime(timeLeft)}
-          </div>
+        <div className="text-lg font-semibold text-red-600 text-center">
+          ⏰ Time Remaining: {formatTime(timeLeft)}
+        </div>
 
-          <div className="bg-base-100 w-full p-6 border border-primary-content rounded-2xl shadow-xl flex flex-col gap-6">
-            <h2 className="text-lg md:text-xl font-semibold text-secondary-content">
-              Q{current + 1}: {currentQuestion.question}
-            </h2>
+        <div className="flex flex-col gap-4">
+          <h2 className="text-xl font-semibold text-gray-800">
+            Q{current + 1}: {currentQuestion.question}
+          </h2>
 
-            <div className="flex flex-col gap-3">
-              {currentQuestion.options.map((option, index) => (
-                <button
-                  key={index}
-                  className={`py-3 px-4 border rounded text-left transition duration-200 ease-in-out ${
-                    answers[current] === option
-                      ? 'bg-primary-content text-primary border-primary font-bold shadow'
-                      : 'bg-base-100 text-base-content border-2 border-base-content hover:bg-secondary-content hover:text-base-100'
-                  }`}
-                  onClick={() => handleOptionClick(option)}
-                >
-                  {option}
-                </button>
-              ))}
-            </div>
-
-            <div className="flex flex-wrap gap-3 justify-between mt-6">
+          <div className="flex flex-col gap-3">
+            {currentQuestion.options.map((option, index) => (
               <button
-                onClick={handlePrevious}
-                className="flex-1 min-w-[110px] px-4 py-2 bg-base-100 border-2 border-base-content rounded-lg hover:bg-primary-content hover:text-primary transition"
-                disabled={current === 0}
-              >
-                ← Previous
-              </button>
-
-              <button
-                onClick={handleClear}
-                className={`flex-1 min-w-[110px] px-4 py-2 bg-base-100 border-2 border-base-content rounded-lg hover:bg-secondary-content hover:text-base-100 transition ${
-                  answers[current] === null ? 'opacity-50 cursor-not-allowed' : ''
+                key={index}
+                className={`py-3 px-4 border rounded text-left transition duration-200 ${
+                  answers[current] === option
+                    ? 'bg-primary text-white font-semibold border-primary'
+                    : 'bg-white text-gray-800 border-gray-400 hover:bg-primary/10'
                 }`}
-                disabled={answers[current] === null}
+                onClick={() => handleOptionClick(option)}
               >
-                Clear
+                {option}
               </button>
-
-              {current < questions.length - 1 ? (
-                <button
-                  onClick={handleNext}
-                  className="flex-1 min-w-[110px] px-4 py-2 bg-base-100 border-2 border-base-content rounded-lg hover:bg-primary-content hover:text-primary transition"
-                >
-                  Next →
-                </button>
-              ) : (
-                <button
-                  onClick={handleSubmit}
-                  className="flex-1 min-w-[110px] px-4 py-2 bg-success-content text-success border border-success-content rounded-lg hover:scale-105 transition"
-                >
-                  ✅ Submit
-                </button>
-              )}
-            </div>
+            ))}
           </div>
+        </div>
+
+        <div className="flex flex-wrap gap-3 justify-between mt-6">
+          <button
+            onClick={handlePrevious}
+            className="flex-1 min-w-[100px] px-4 py-2 border rounded-lg bg-white text-gray-800 border-gray-400 hover:bg-gray-100 transition"
+            disabled={current === 0}
+          >
+            ← Previous
+          </button>
+
+          <button
+            onClick={handleClear}
+            className={`flex-1 min-w-[100px] px-4 py-2 border rounded-lg ${
+              answers[current] === null
+                ? 'opacity-50 cursor-not-allowed bg-gray-200 border-gray-300'
+                : 'bg-white text-gray-800 border-gray-400 hover:bg-yellow-100'
+            } transition`}
+            disabled={answers[current] === null}
+          >
+            Clear
+          </button>
+
+          {current < questions.length - 1 ? (
+            <button
+              onClick={handleNext}
+              className="flex-1 min-w-[100px] px-4 py-2 border rounded-lg bg-primary text-white hover:scale-105 transition"
+            >
+              Next →
+            </button>
+          ) : (
+            <button
+              onClick={handleSubmit}
+              className="flex-1 min-w-[100px] px-4 py-2 border rounded-lg bg-green-600 text-white hover:scale-105 transition"
+            >
+              ✅ Submit
+            </button>
+          )}
         </div>
       </div>
     </div>
