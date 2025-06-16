@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
 import questions from '../assets/data/questions';
 import Results from './Results';
 import toast from 'react-hot-toast';
 
 const Quiz = () => {
-  const location = useLocation();
   const name = localStorage.getItem('quiz-user-name');
 
   const [current, setCurrent] = useState(0);
